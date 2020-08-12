@@ -1,0 +1,14 @@
+Bootstrap: docker
+From: debian:buster
+
+%environment
+DISPLAY=:0
+TERM=xterm
+export DISPLAY TERM
+
+%post
+apt -qqy update && apt -qqy upgrade
+apt -qqy --no-install-recommends install openctm-tools
+
+%runscript
+ctmviewer $1
