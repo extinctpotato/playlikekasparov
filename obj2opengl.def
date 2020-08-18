@@ -1,0 +1,17 @@
+Bootstrap: docker
+From: debian:8
+
+%environment
+TERM=xterm
+export TERM
+export LANG=en_US.UTF-8 
+export LC_ALL=en_US.UTF-8 
+
+%post
+apt -qqy update && apt -qqy upgrade
+apt -qqy install perl perl-base perl-modules wget
+wget -O /usr/bin/obj2opengl.pl https://raw.githubusercontent.com/HBehrens/obj2opengl/master/obj2opengl.pl
+chmod +x /usr/bin/obj2opengl.pl
+
+%runscript
+/usr/bin/obj2opengl.pl $@
