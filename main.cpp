@@ -9,10 +9,23 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <stdlib.h>
 #include <stdio.h>
-#include "lodepng.h"
 #include "models/all.h"
+#include "misc.h"
+#include "shaderprogram.h"
+
+ShaderProgram *s1;
+
+GLuint lwood;
+GLuint dwood;
 
 float aspectRatio = 1;
+
+void drawTest() {
+	unsigned int VBO;
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(knightVerts), knightVerts, GL_STATIC_DRAW);
+}
 
 void error_callback(int error, const char* description) {
 	fputs(description, stderr);
@@ -29,6 +42,12 @@ void init(GLFWwindow* window) {
 	glEnable(GL_DEPTH_TEST);
 	glfwSetWindowSizeCallback(window,windowResizeCallback);
 	//glfwSetKeyCallback(window,keyCallback);
+	
+	s1 = new ShaderProgram("shaders/v_simplest.glsl", NULL, "shaders/f_simplest.glsl");
+
+	dwood = readTexture("textures/dwood.png");
+	lwood = readTexture("textures/lwood.png");
+	drawTest();
 }
 
 void death(GLFWwindow* window) {
@@ -37,7 +56,6 @@ void death(GLFWwindow* window) {
 
 void drawScene(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	glfwSwapBuffers(window);
 }
 
