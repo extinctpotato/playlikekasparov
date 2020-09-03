@@ -13,19 +13,15 @@
 #include "misc.h"
 #include "shaderprogram.h"
 
+const float PI = 3.141592653589793f;
+
 ShaderProgram *s1;
 
 GLuint lwood;
 GLuint dwood;
 
 float aspectRatio = 1;
-
-void drawTest() {
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(knightVerts), knightVerts, GL_STATIC_DRAW);
-}
+unsigned int VAOtest, VBOtest;
 
 void error_callback(int error, const char* description) {
 	fputs(description, stderr);
@@ -47,7 +43,6 @@ void init(GLFWwindow* window) {
 
 	dwood = readTexture("textures/dwood.png");
 	lwood = readTexture("textures/lwood.png");
-	drawTest();
 }
 
 void death(GLFWwindow* window) {
@@ -56,6 +51,51 @@ void death(GLFWwindow* window) {
 
 void drawScene(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	float* vertices = knightVerts;
+	float* normals = knightNormals;
+	float* texCoords = knightTexCoords;
+	int vertexCount = knightNumVerts;
+
+	float angle_x=0; 
+	float angle_y=0;
+
+	glm::mat4 V=glm::lookAt(
+			glm::vec3(0, 0, -2.5),
+			glm::vec3(0,0,0),
+			glm::vec3(0.0f,1.0f,0.0f));
+
+	glm::mat4 P=glm::perspective(50.0f*PI/180.0f, aspectRatio, 0.01f, 50.0f); //Wylicz macierz rzutowania
+
+	glm::mat4 M=glm::mat4(1.0f);
+	M=glm::rotate(M,angle_y,glm::vec3(1.0f,0.0f,0.0f)); //Wylicz macierz modelu
+	M=glm::rotate(M,angle_x,glm::vec3(0.0f,1.0f,0.0f));
+
+	s1->use();
+
+	glUniformMatrix4fv(s1->u("P"),1,false,glm::value_ptr(P));
+	glUniformMatrix4fv(s1->u("V"),1,false,glm::value_ptr(V));
+	glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
+
+	glEnableVertexAttribArray(s1->a("vertex"));
+	glVertexAttribPointer(s1->a("vertex"),4,GL_FLOAT,false,0,vertices);
+
+	glEnableVertexAttribArray(s1->a("normal"));
+	glVertexAttribPointer(s1->a("normal"), 4, GL_FLOAT, false, 0, normals);
+
+	glEnableVertexAttribArray(s1->a("texCoord0"));
+	glVertexAttribPointer(s1->a("texCoord0"), 2, GL_FLOAT, false, 0, texCoords);
+
+	glUniform1i(s1->u("textureMap0"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, lwood);
+
+	glDrawArrays(GL_TRIANGLES,0,vertexCount); 
+
+	glDisableVertexAttribArray(s1->a("vertex"));
+	glDisableVertexAttribArray(s1->a("normal"));  
+	glDisableVertexAttribArray(s1->a("texCoord0"));
+
 	glfwSwapBuffers(window);
 }
 
@@ -69,9 +109,9 @@ int main(void) {
 		exit(EXIT_FAILURE);
 	}
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3.30);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3.30);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	window = glfwCreateWindow(600, 600, "playlikekasparov", NULL, NULL);
 
@@ -94,8 +134,8 @@ int main(void) {
 	glfwSetTime(0);
 
 	while (!glfwWindowShouldClose(window)) {
-		drawScene(window);
 		glfwSetTime(0);
+		drawScene(window);
 		glfwPollEvents();
 	}
 
