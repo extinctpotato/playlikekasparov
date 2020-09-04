@@ -22,24 +22,19 @@ GLuint dwood;
 
 float aspectRatio = 1;
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow *window);
-
-// camera
 glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
 
 bool firstMouse = true;
-float yaw   = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
+bool grabbed = false;
+float yaw   = -90.0f;	// yaw of 0.0 results in a direction vector pointing to the right
 float pitch =  0.0f;
 float lastX =  800.0f / 2.0;
 float lastY =  600.0 / 2.0;
 float fov   =  45.0f;
 
-float deltaTime = 0.0f;	// time between current frame and last frame
+float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -85,6 +80,19 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
         fov = 45.0f;
 }
 
+void keyCallback(GLFWwindow* window,int key,int scancode,int action,int mods) {
+	if (action==GLFW_PRESS) {
+		if (key==GLFW_KEY_G) {
+		    if (!grabbed) {
+			    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		    } else {
+			    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		    }
+		    grabbed = !grabbed;
+		}
+	}
+}
+
 void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
@@ -120,9 +128,7 @@ void init(GLFWwindow* window) {
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 
-	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-	//glfwSetKeyCallback(window,keyCallback);
+	glfwSetKeyCallback(window,keyCallback);
 	
 	s1 = new ShaderProgram("shaders/v_simplest.glsl", NULL, "shaders/f_simplest.glsl");
 
