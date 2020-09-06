@@ -249,9 +249,9 @@ int main(void) {
 		exit(EXIT_FAILURE);
 	}
 
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3.30);
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3.30);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
 	window = glfwCreateWindow(600, 600, "playlikekasparov", NULL, NULL);
 
