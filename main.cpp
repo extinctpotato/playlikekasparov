@@ -46,75 +46,75 @@ GLuint testVAO, testVBO[3];
 /// INPUT & MISC CALLBACKS ///
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    if (firstMouse)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
 
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-    lastX = xpos;
-    lastY = ypos;
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+	lastX = xpos;
+	lastY = ypos;
 
-    float sensitivity = 0.1f; // change this value to your liking
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
+	float sensitivity = 0.1f; // change this value to your liking
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
 
-    yaw += xoffset;
-    pitch += yoffset;
+	yaw += xoffset;
+	pitch += yoffset;
 
-    // make sure that when pitch is out of bounds, screen doesn't get flipped
-    if (pitch > 89.0f)
-        pitch = 89.0f;
-    if (pitch < -89.0f)
-        pitch = -89.0f;
+	// make sure that when pitch is out of bounds, screen doesn't get flipped
+	if (pitch > 89.0f)
+		pitch = 89.0f;
+	if (pitch < -89.0f)
+		pitch = -89.0f;
 
-    glm::vec3 front;
-    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y = sin(glm::radians(pitch));
-    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    cameraFront = glm::normalize(front);
+	glm::vec3 front;
+	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	front.y = sin(glm::radians(pitch));
+	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	cameraFront = glm::normalize(front);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    fov -= (float)yoffset;
-    if (fov < 1.0f)
-        fov = 1.0f;
-    if (fov > 45.0f)
-        fov = 45.0f;
+	fov -= (float)yoffset;
+	if (fov < 1.0f)
+		fov = 1.0f;
+	if (fov > 45.0f)
+		fov = 45.0f;
 }
 
 void keyCallback(GLFWwindow* window,int key,int scancode,int action,int mods) {
 	if (action==GLFW_PRESS) {
 		if (key==GLFW_KEY_G) {
-		    if (!grabbed) {
-			    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		    } else {
-			    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		    }
-		    grabbed = !grabbed;
+			if (!grabbed) {
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			} else {
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			}
+			grabbed = !grabbed;
 		}
 	}
 }
 
 void processInput(GLFWwindow *window)
 {
-    if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-	    glfwSetWindowShouldClose(window, true);
-    }
+	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, true);
+	}
 
-    float cameraSpeed = 2.5 * deltaTime;
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPos += cameraSpeed * cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPos -= cameraSpeed * cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	float cameraSpeed = 2.5 * deltaTime;
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		cameraPos += cameraSpeed * cameraFront;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		cameraPos -= cameraSpeed * cameraFront;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
 void error_callback(int error, const char* description) {
@@ -138,7 +138,7 @@ void init(GLFWwindow* window) {
 	glfwSetScrollCallback(window, scroll_callback);
 
 	glfwSetKeyCallback(window,keyCallback);
-	
+
 	s1 = new ShaderProgram("shaders/v_simplest.glsl", NULL, "shaders/f_simplest.glsl");
 
 	dwood = readTexture("textures/dwood.png");
@@ -210,7 +210,7 @@ void drawSceneVAO(GLFWwindow* window) {
 
 	glm::vec3 oPositions[] = {
 		glm::vec3( 0.0f,  0.0f,  0.0f),
-		glm::vec3( 2.0f,  5.0f, -15.0f),
+		glm::vec3( 0.0f,  0.0f, 1.0f),
 		glm::vec3(-1.5f, -2.2f, -2.5f),
 		glm::vec3(-3.8f, -2.0f, -12.3f),
 		glm::vec3( 2.4f, -0.4f, -3.5f),
@@ -219,68 +219,22 @@ void drawSceneVAO(GLFWwindow* window) {
 		glm::vec3( 1.5f,  2.0f, -2.5f),
 		glm::vec3( 1.5f,  0.2f, -1.5f),
 		glm::vec3(-1.3f,  1.0f, -1.5f)
-	    };
+	};
 
 	bool tex = 0;
 
 	for (unsigned int i = 0; i < 10; i++) {
-            // calculate the model matrix for each object and pass it to shader before drawing
-	    glUniform1i(s1->u("textureMap0"), tex);
-	    tex = !tex;
-            glm::mat4 M = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-            M = glm::translate(M, oPositions[i]);
-            float angle = 20.0f * i;	
-            M = glm::rotate(M, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-	    glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
-            glDrawArrays(GL_TRIANGLES, 0, knightNumVerts);
-        }
+		// calculate the model matrix for each object and pass it to shader before drawing
+		glUniform1i(s1->u("textureMap0"), tex);
+		tex = !tex;
+		glm::mat4 M = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+		M = glm::translate(M, oPositions[i]);
+		float angle = 0;
 
-	glfwSwapBuffers(window);
-}
-
-void drawScene(GLFWwindow* window) {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	float* vertices = knightVerts;
-	float* normals = knightNormals;
-	float* texCoords = knightTexCoords;
-	int vertexCount = knightNumVerts;
-
-	float angle_x=0; 
-	float angle_y=0;
-
-	glm::mat4 V = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
-	glm::mat4 P=glm::perspective(glm::radians(fov), aspectRatio, 0.01f, 50.0f); //Wylicz macierz rzutowania
-
-	glm::mat4 M=glm::mat4(1.0f);
-	M=glm::rotate(M,angle_y,glm::vec3(1.0f,0.0f,0.0f)); //Wylicz macierz modelu
-	M=glm::rotate(M,angle_x,glm::vec3(0.0f,1.0f,0.0f));
-
-	s1->use();
-
-	glUniformMatrix4fv(s1->u("P"),1,false,glm::value_ptr(P));
-	glUniformMatrix4fv(s1->u("V"),1,false,glm::value_ptr(V));
-	glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
-
-	glEnableVertexAttribArray(s1->a("vertex"));
-	glVertexAttribPointer(s1->a("vertex"),4,GL_FLOAT,false,0,vertices);
-
-	glEnableVertexAttribArray(s1->a("normal"));
-	glVertexAttribPointer(s1->a("normal"), 4, GL_FLOAT, false, 0, normals);
-
-	glEnableVertexAttribArray(s1->a("texCoord0"));
-	glVertexAttribPointer(s1->a("texCoord0"), 2, GL_FLOAT, false, 0, texCoords);
-
-	glUniform1i(s1->u("textureMap0"), 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, lwood);
-
-	glDrawArrays(GL_TRIANGLES,0,vertexCount); 
-
-	glDisableVertexAttribArray(s1->a("vertex"));
-	glDisableVertexAttribArray(s1->a("normal"));  
-	glDisableVertexAttribArray(s1->a("texCoord0"));
+		M = glm::rotate(M, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+		glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
+		glDrawArrays(GL_TRIANGLES, 0, knightNumVerts);
+	}
 
 	glfwSwapBuffers(window);
 }
@@ -318,7 +272,7 @@ int main(void) {
 	init(window);
 
 	//glfwSetTime(0);
-	
+
 	test1();
 
 	while (!glfwWindowShouldClose(window)) {
