@@ -37,6 +37,13 @@ float fov   =  45.0f;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+
+// TEST VARS - MAY BE REMOVED OR NOT //
+
+GLuint testVAO, testVBO[3];
+
+
+/// INPUT & MISC CALLBACKS ///
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
     if (firstMouse)
@@ -120,6 +127,8 @@ void windowResizeCallback(GLFWwindow* window,int width,int height) {
 	glViewport(0,0,width,height);
 }
 
+/// END OF INPUT & MISC CALLBACKS ///
+
 void init(GLFWwindow* window) {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -140,6 +149,65 @@ void death(GLFWwindow* window) {
 	asm("nop");
 }
 
+void test1() {
+	GLuint vao, vbo[3];
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	glGenBuffers(3, vbo);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(knightVerts), knightVerts, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(knightNormals), knightNormals, GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(knightTexCoords), knightTexCoords, GL_STATIC_DRAW);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(2);
+
+	testVAO = vao;
+}
+
+void drawSceneVAO(GLFWwindow* window) {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	float angle_x=0; 
+	float angle_y=0;
+
+	glm::mat4 V = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+	glm::mat4 P=glm::perspective(glm::radians(fov), aspectRatio, 0.01f, 50.0f); //Wylicz macierz rzutowania
+
+	glm::mat4 M=glm::mat4(1.0f);
+	M=glm::rotate(M,angle_y,glm::vec3(1.0f,0.0f,0.0f)); //Wylicz macierz modelu
+	M=glm::rotate(M,angle_x,glm::vec3(0.0f,1.0f,0.0f));
+
+	s1->use();
+
+	glUniformMatrix4fv(s1->u("P"),1,false,glm::value_ptr(P));
+	glUniformMatrix4fv(s1->u("V"),1,false,glm::value_ptr(V));
+	glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, lwood);
+
+	s1->use();
+
+	glUniform1i(s1->u("textureMap0"), 0);
+
+	glBindVertexArray(testVAO);
+	glDrawArrays(GL_TRIANGLES, 0, knightNumVerts);
+
+	glfwSwapBuffers(window);
+}
+
 void drawScene(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -151,11 +219,6 @@ void drawScene(GLFWwindow* window) {
 	float angle_x=0; 
 	float angle_y=0;
 
-	//glm::mat4 V=glm::lookAt(
-	//		glm::vec3(0, 0, -2.5),
-	//		glm::vec3(0,0,0),
-	//		glm::vec3(0.0f,1.0f,0.0f));
-	
 	glm::mat4 V = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
 	glm::mat4 P=glm::perspective(glm::radians(fov), aspectRatio, 0.01f, 50.0f); //Wylicz macierz rzutowania
@@ -225,6 +288,8 @@ int main(void) {
 	init(window);
 
 	//glfwSetTime(0);
+	
+	test1();
 
 	while (!glfwWindowShouldClose(window)) {
 		float currentFrame = glfwGetTime();
@@ -234,7 +299,8 @@ int main(void) {
 		processInput(window);
 
 		//glfwSetTime(0);
-		drawScene(window);
+		//drawScene(window);
+		drawSceneVAO(window);
 		glfwPollEvents();
 	}
 
