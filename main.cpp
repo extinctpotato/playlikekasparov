@@ -185,25 +185,55 @@ void drawSceneVAO(GLFWwindow* window) {
 
 	glm::mat4 P=glm::perspective(glm::radians(fov), aspectRatio, 0.01f, 50.0f); //Wylicz macierz rzutowania
 
-	glm::mat4 M=glm::mat4(1.0f);
-	M=glm::rotate(M,angle_y,glm::vec3(1.0f,0.0f,0.0f)); //Wylicz macierz modelu
-	M=glm::rotate(M,angle_x,glm::vec3(0.0f,1.0f,0.0f));
+	//glm::mat4 M=glm::mat4(1.0f);
+	//M=glm::rotate(M,angle_y,glm::vec3(1.0f,0.0f,0.0f)); //Wylicz macierz modelu
+	//M=glm::rotate(M,angle_x,glm::vec3(0.0f,1.0f,0.0f));
 
 	s1->use();
 
 	glUniformMatrix4fv(s1->u("P"),1,false,glm::value_ptr(P));
 	glUniformMatrix4fv(s1->u("V"),1,false,glm::value_ptr(V));
-	glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
+	//glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, lwood);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, dwood);
 
 	s1->use();
 
 	glUniform1i(s1->u("textureMap0"), 0);
 
 	glBindVertexArray(testVAO);
-	glDrawArrays(GL_TRIANGLES, 0, knightNumVerts);
+	//glDrawArrays(GL_TRIANGLES, 0, knightNumVerts);
+
+	glm::vec3 oPositions[] = {
+		glm::vec3( 0.0f,  0.0f,  0.0f),
+		glm::vec3( 2.0f,  5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3( 2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f,  3.0f, -7.5f),
+		glm::vec3( 1.3f, -2.0f, -2.5f),
+		glm::vec3( 1.5f,  2.0f, -2.5f),
+		glm::vec3( 1.5f,  0.2f, -1.5f),
+		glm::vec3(-1.3f,  1.0f, -1.5f)
+	    };
+
+	bool tex = 0;
+
+	for (unsigned int i = 0; i < 10; i++) {
+            // calculate the model matrix for each object and pass it to shader before drawing
+	    glUniform1i(s1->u("textureMap0"), tex);
+	    tex = !tex;
+            glm::mat4 M = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+            M = glm::translate(M, oPositions[i]);
+            float angle = 20.0f * i;	
+            M = glm::rotate(M, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+	    glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
+            glDrawArrays(GL_TRIANGLES, 0, knightNumVerts);
+        }
 
 	glfwSwapBuffers(window);
 }
