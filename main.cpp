@@ -150,7 +150,9 @@ void death(GLFWwindow* window) {
 }
 
 void test1() {
-	GLuint vao, vbo[3];
+	unsigned int vao, vbo[3];
+
+	Guacamole f = figures[0];
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -158,17 +160,17 @@ void test1() {
 	glGenBuffers(3, vbo);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(knightVerts), knightVerts, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, f.vertsSize, f.verts, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(knightNormals), knightNormals, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, f.normalsSize, f.normals, GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(knightTexCoords), knightTexCoords, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, f.texCoordsSize, f.texCoords, GL_STATIC_DRAW);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(2);
 
@@ -177,6 +179,8 @@ void test1() {
 
 void drawSceneVAO(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	Guacamole f = figures[0];
 
 	float angle_x=0; 
 	float angle_y=0;
@@ -233,7 +237,7 @@ void drawSceneVAO(GLFWwindow* window) {
 
 		M = glm::rotate(M, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 		glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
-		glDrawArrays(GL_TRIANGLES, 0, knightNumVerts);
+		glDrawArrays(GL_TRIANGLES, 0, f.vertexCount);
 	}
 
 	glfwSwapBuffers(window);
