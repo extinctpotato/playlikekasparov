@@ -37,12 +37,6 @@ float fov   =  45.0f;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-
-// TEST VARS - MAY BE REMOVED OR NOT //
-
-GLuint testVAO, testVBO[3];
-
-
 /// INPUT & MISC CALLBACKS ///
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -149,38 +143,41 @@ void death(GLFWwindow* window) {
 	asm("nop");
 }
 
-void test1() {
-	unsigned int vao, vbo[3];
+void generateVAO() {
+	int models = sizeof(figures) / sizeof(Guacamole);
 
-	Guacamole f = figures[0];
+	for (int i = 0; i < models; i++) {
+		unsigned int vao, vbo[3];
 
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
+		Guacamole f = figures[i];
 
-	glGenBuffers(3, vbo);
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-	glBufferData(GL_ARRAY_BUFFER, f.vertsSize, f.verts, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(0);
+		glGenBuffers(3, vbo);
 
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-	glBufferData(GL_ARRAY_BUFFER, f.normalsSize, f.normals, GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+		glBufferData(GL_ARRAY_BUFFER, f.vertsSize, f.verts, GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-	glBufferData(GL_ARRAY_BUFFER, f.texCoordsSize, f.texCoords, GL_STATIC_DRAW);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(2);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+		glBufferData(GL_ARRAY_BUFFER, f.normalsSize, f.normals, GL_STATIC_DRAW);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(1);
 
-	testVAO = vao;
+		glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+		glBufferData(GL_ARRAY_BUFFER, f.texCoordsSize, f.texCoords, GL_STATIC_DRAW);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(2);
+
+		figures[i].vao = vao;
+		printf("Generated VAO: %d\n", figures[i].vao);
+	}
 }
 
 void drawSceneVAO(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	Guacamole f = figures[0];
 
 	float angle_x=0; 
 	float angle_y=0;
@@ -207,9 +204,6 @@ void drawSceneVAO(GLFWwindow* window) {
 
 	s1->use();
 
-	glUniform1i(s1->u("textureMap0"), 0);
-
-	glBindVertexArray(testVAO);
 	//glDrawArrays(GL_TRIANGLES, 0, knightNumVerts);
 
 	glm::vec3 oPositions[] = {
@@ -227,7 +221,8 @@ void drawSceneVAO(GLFWwindow* window) {
 
 	bool tex = 0;
 
-	for (unsigned int i = 0; i < 10; i++) {
+	for (unsigned int i = 0; i < 6; i++) {
+		glBindVertexArray(figures[i].vao);
 		// calculate the model matrix for each object and pass it to shader before drawing
 		glUniform1i(s1->u("textureMap0"), tex);
 		tex = !tex;
@@ -237,7 +232,7 @@ void drawSceneVAO(GLFWwindow* window) {
 
 		M = glm::rotate(M, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 		glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
-		glDrawArrays(GL_TRIANGLES, 0, f.vertexCount);
+		glDrawArrays(GL_TRIANGLES, 0, figures[i].vertexCount);
 	}
 
 	glfwSwapBuffers(window);
@@ -277,7 +272,7 @@ int main(void) {
 
 	//glfwSetTime(0);
 
-	test1();
+	generateVAO();
 
 	while (!glfwWindowShouldClose(window)) {
 		float currentFrame = glfwGetTime();
