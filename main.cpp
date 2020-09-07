@@ -123,26 +123,6 @@ void windowResizeCallback(GLFWwindow* window,int width,int height) {
 
 /// END OF INPUT & MISC CALLBACKS ///
 
-void init(GLFWwindow* window) {
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glEnable(GL_DEPTH_TEST);
-
-	glfwSetWindowSizeCallback(window,windowResizeCallback);
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
-
-	glfwSetKeyCallback(window,keyCallback);
-
-	s1 = new ShaderProgram("shaders/v_simplest.glsl", NULL, "shaders/f_simplest.glsl");
-
-	dwood = readTexture("textures/dwood.png");
-	lwood = readTexture("textures/lwood.png");
-}
-
-void death(GLFWwindow* window) {
-	asm("nop");
-}
-
 void generateVAO() {
 	int models = sizeof(figures) / sizeof(Guacamole);
 
@@ -176,7 +156,29 @@ void generateVAO() {
 	}
 }
 
-void drawSceneVAO(GLFWwindow* window) {
+void init(GLFWwindow* window) {
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glEnable(GL_DEPTH_TEST);
+
+	glfwSetWindowSizeCallback(window,windowResizeCallback);
+	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
+
+	glfwSetKeyCallback(window,keyCallback);
+
+	s1 = new ShaderProgram("shaders/v_simplest.glsl", NULL, "shaders/f_simplest.glsl");
+
+	dwood = readTexture("textures/dwood.png");
+	lwood = readTexture("textures/lwood.png");
+
+	generateVAO();
+}
+
+void death(GLFWwindow* window) {
+	asm("nop");
+}
+
+void drawScene(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	float angle_x=0; 
@@ -184,17 +186,12 @@ void drawSceneVAO(GLFWwindow* window) {
 
 	glm::mat4 V = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-	glm::mat4 P=glm::perspective(glm::radians(fov), aspectRatio, 0.01f, 50.0f); //Wylicz macierz rzutowania
-
-	//glm::mat4 M=glm::mat4(1.0f);
-	//M=glm::rotate(M,angle_y,glm::vec3(1.0f,0.0f,0.0f)); //Wylicz macierz modelu
-	//M=glm::rotate(M,angle_x,glm::vec3(0.0f,1.0f,0.0f));
+	glm::mat4 P=glm::perspective(glm::radians(fov), aspectRatio, 0.01f, 50.0f);
 
 	s1->use();
 
 	glUniformMatrix4fv(s1->u("P"),1,false,glm::value_ptr(P));
 	glUniformMatrix4fv(s1->u("V"),1,false,glm::value_ptr(V));
-	//glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, lwood);
@@ -203,8 +200,6 @@ void drawSceneVAO(GLFWwindow* window) {
 	glBindTexture(GL_TEXTURE_2D, dwood);
 
 	s1->use();
-
-	//glDrawArrays(GL_TRIANGLES, 0, knightNumVerts);
 
 	glm::vec3 wPositions[] = {
 		glm::vec3(0.0f,  0.0f,  0.0f),
@@ -280,20 +275,13 @@ int main(void) {
 
 	init(window);
 
-	//glfwSetTime(0);
-
-	generateVAO();
-
 	while (!glfwWindowShouldClose(window)) {
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
 		processInput(window);
-
-		//glfwSetTime(0);
-		//drawScene(window);
-		drawSceneVAO(window);
+		drawScene(window);
 		glfwPollEvents();
 	}
 
