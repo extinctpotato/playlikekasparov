@@ -38,8 +38,9 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 /// INPUT & MISC CALLBACKS ///
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+	if (!grabbed) return;
+
 	if (firstMouse)
 	{
 		lastX = xpos;
