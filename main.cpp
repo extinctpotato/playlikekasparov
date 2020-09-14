@@ -172,6 +172,12 @@ void init(GLFWwindow* window) {
 	dwood = readTexture("textures/dwood.png");
 	lwood = readTexture("textures/lwood.png");
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, lwood);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, dwood);
+
 	generateVAO();
 }
 
@@ -194,11 +200,7 @@ void drawScene(GLFWwindow* window) {
 	glUniformMatrix4fv(s1->u("P"),1,false,glm::value_ptr(P));
 	glUniformMatrix4fv(s1->u("V"),1,false,glm::value_ptr(V));
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, lwood);
 
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, dwood);
 
 	s1->use();
 
@@ -245,12 +247,14 @@ void drawScene(GLFWwindow* window) {
 }
 
 int main(void) {
+	setenv("MESA_GL_VERSION_OVERRIDE", "3.3", 1);
+
 	GLFWwindow* window;
 
 	glfwSetErrorCallback(error_callback);
 
 	if (!glfwInit()) {
-		fprintf(stderr, "Failed to initialize GLFW!");
+		fprintf(stderr, "Failed to initialize GLFW!\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -261,7 +265,7 @@ int main(void) {
 	window = glfwCreateWindow(600, 600, "playlikekasparov", NULL, NULL);
 
 	if (!window) {
-		fprintf(stderr, "Failed to initialize the window!");
+		fprintf(stderr, "Failed to initialize the window!\n");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
@@ -270,7 +274,7 @@ int main(void) {
 	glfwSwapInterval(1);
 
 	if (glewInit() != GLEW_OK) {
-		fprintf(stderr, "Failed to initialize GLEW!");
+		fprintf(stderr, "Failed to initialize GLEW!\n");
 		exit(EXIT_FAILURE);
 	}
 
