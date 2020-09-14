@@ -211,6 +211,7 @@ void drawScene(GLFWwindow* window) {
 		glm::vec3(0.0f, 0.0f, 3.0f),
 		glm::vec3(0.0f, 0.0f, 4.0f),
 		glm::vec3(0.0f,  0.0f, 5.0f),
+		glm::vec3(0.0f,  0.0f, 6.0f),
 	};
 
 	glm::vec3 bPositions[] = {
@@ -220,6 +221,7 @@ void drawScene(GLFWwindow* window) {
 		glm::vec3(2.0f, 0.0f, 3.0f),
 		glm::vec3(2.0f, 0.0f, 4.0f),
 		glm::vec3(2.0f,  0.0f, 5.0f),
+		glm::vec3(2.0f,  0.0f, 6.0f),
 	};
 
 	bool tex = 0;
@@ -228,15 +230,24 @@ void drawScene(GLFWwindow* window) {
 		glm::vec3 *pos;
 		if (i == 0) pos = wPositions;
 		if (i == 1) pos = bPositions;
-		for (unsigned int i = 0; i < 6; i++) {
-			glBindVertexArray(figures[i].vao);
+		for (unsigned int j = 0; j < 6; j++) {
+			glBindVertexArray(figures[j].vao);
 			glUniform1i(s1->u("textureMap0"), tex);
 			glm::mat4 M = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-			M = glm::translate(M, pos[i]);
+			M = glm::translate(M, pos[j]);
 			float angle = 0;
-			M = glm::rotate(M, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			M = glm::rotate(M, glm::radians(angle), glm::vec3(1.0f, 1.0f, 1.0f));
 			glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
-			glDrawArrays(GL_TRIANGLES, 0, figures[i].vertexCount);
+			glDrawArrays(GL_TRIANGLES, 0, figures[j].vertexCount);
+
+			glBindVertexArray(figures[6].vao);
+			glUniform1i(s1->u("textureMap0"), tex);
+			glm::mat4 M2 = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+			M2 = glm::translate(M2, pos[j]);
+			float angle2 = 0;
+			M2 = glm::rotate(M2, glm::radians(angle2), glm::vec3(1.0f, 1.0f, 1.0f));
+			glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M2));
+			glDrawArrays(GL_TRIANGLES, 0, figures[6].vertexCount);
 		}
 		tex = !tex;
 	}
