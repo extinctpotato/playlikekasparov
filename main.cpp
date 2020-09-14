@@ -241,12 +241,6 @@ void drawScene(GLFWwindow* window) {
 			glDrawArrays(GL_TRIANGLES, 0, figures[j].vertexCount);
 
 			glBindVertexArray(figures[6].vao);
-			glUniform1i(s1->u("textureMap0"), tex);
-			glm::mat4 M2 = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-			M2 = glm::translate(M2, pos[j]);
-			float angle2 = 0;
-			M2 = glm::rotate(M2, glm::radians(angle2), glm::vec3(1.0f, 1.0f, 1.0f));
-			glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M2));
 			glDrawArrays(GL_TRIANGLES, 0, figures[6].vertexCount);
 		}
 		tex = !tex;
