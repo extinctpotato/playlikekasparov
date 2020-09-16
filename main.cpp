@@ -45,7 +45,7 @@ std::ifstream bsn("./pgn/SovietChamp1973.bsn");
 std::vector<std::string> board(8);
 int games;
 
-std::map<std::string, int> keyValueVAO;
+std::map<std::string, int> keyValueModel;
 
 void next_move() {
 	for (int i = 0; i < 8; i++) {
@@ -177,7 +177,7 @@ void generateVAO() {
 
 		figures[i].vao = vao;
 		std::string l(1, figures[i].letter);
-		keyValueVAO[l] = vao;
+		keyValueModel[l] = i;
 		printf("Generated VAO: %d\n", figures[i].vao);
 	}
 }
@@ -285,6 +285,17 @@ void drawScene(GLFWwindow* window) {
 			M = glm::rotate(M, glm::radians(angle), glm::vec3(1.0f, 1.0f, 1.0f));
 			glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
 			glDrawArrays(GL_TRIANGLES, 0, figures[6].vertexCount);
+
+			if (c != '.') {
+				std::string piece(1, tolower(c));
+				int figureId = keyValueModel[piece];
+				bool figureTex = 0;
+				
+				glBindVertexArray(figures[figureId].vao);
+				glUniform1i(s1->u("textureMap0"), figureTex);
+				glDrawArrays(GL_TRIANGLES, 0, figures[figureId].vertexCount);
+
+			}
 
 			fieldTex = !fieldTex;
 			fieldCounter += 1.0f;
