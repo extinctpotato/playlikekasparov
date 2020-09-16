@@ -110,6 +110,8 @@ void processInput(GLFWwindow *window)
 		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+
+	//printf("%f %f %f\n", cameraPos.x, cameraPos.y, cameraPos.z);
 }
 
 void error_callback(int error, const char* description) {
@@ -215,13 +217,13 @@ void drawScene(GLFWwindow* window) {
 	};
 
 	glm::vec3 bPositions[] = {
-		glm::vec3(2.0f,  0.0f,  0.0f),
-		glm::vec3(2.0f,  0.0f, 1.0f),
-		glm::vec3(2.0f, 0.0f, 2.0f),
-		glm::vec3(2.0f, 0.0f, 3.0f),
-		glm::vec3(2.0f, 0.0f, 4.0f),
-		glm::vec3(2.0f,  0.0f, 5.0f),
-		glm::vec3(2.0f,  0.0f, 6.0f),
+		glm::vec3(1.0f,  0.0f,  0.0f),
+		glm::vec3(1.0f,  0.0f, 1.0f),
+		glm::vec3(1.0f, 0.0f, 2.0f),
+		glm::vec3(1.0f, 0.0f, 3.0f),
+		glm::vec3(1.0f, 0.0f, 4.0f),
+		glm::vec3(1.0f,  0.0f, 5.0f),
+		glm::vec3(1.0f,  0.0f, 6.0f),
 	};
 
 	bool tex = 0;
