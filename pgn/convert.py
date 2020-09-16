@@ -11,7 +11,10 @@ for i in range(int(sys.argv[2])):
 
 board = game.board()
 
+board_states = list(reversed(str(board).replace(" ","").split('\n'))) + ['']
+
 for move in game.mainline_moves():
     board.push(move)
-    print(board)
-    print('\n')
+    board_states = board_states + list(reversed(str(board).replace(" ","").split('\n'))) + ['']
+
+print("\n".join(board_states))
