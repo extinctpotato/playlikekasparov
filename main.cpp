@@ -2,6 +2,9 @@
 #define GLM_FORCE_SWIZZLE
 
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -36,6 +39,20 @@ float fov   =  45.0f;
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+
+std::ifstream bsn("./pgn/SovietChamp1973.bsn");
+int games;
+std::vector<std::string> board(8);
+
+void next_move() {
+	for (int i = 0; i < 8; i++) {
+		bsn >> board[i];
+		for (char const &c: board[i]) {
+			std::cout << c << '\n';
+		}
+	}
+}
+
 
 /// INPUT & MISC CALLBACKS ///
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -90,6 +107,9 @@ void keyCallback(GLFWwindow* window,int key,int scancode,int action,int mods) {
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			}
 			grabbed = !grabbed;
+		}
+		if (key==GLFW_KEY_N) {
+			next_move();
 		}
 	}
 }
@@ -253,6 +273,12 @@ void drawScene(GLFWwindow* window) {
 
 int main(void) {
 	setenv("MESA_GL_VERSION_OVERRIDE", "3.3", 1);
+
+	bsn >> games;
+
+	printf("%d board states ahead of us...\n", games);
+
+	next_move();
 
 	GLFWwindow* window;
 
