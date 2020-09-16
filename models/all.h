@@ -15,14 +15,15 @@ struct Guacamole {
 	size_t texCoordsSize;
 	unsigned int vertexCount;
 	unsigned int vao;
+	char letter;
 };
 
 Guacamole figures[] = {
-	{rookVerts,sizeof(rookVerts),rookNormals,sizeof(rookNormals),rookTexCoords,sizeof(rookTexCoords),rookNumVerts,0}, 
-	{knightVerts,sizeof(knightVerts),knightNormals,sizeof(knightNormals),knightTexCoords,sizeof(knightTexCoords),knightNumVerts,0}, 
-	{bishopVerts,sizeof(bishopVerts),bishopNormals,sizeof(bishopNormals),bishopTexCoords,sizeof(bishopTexCoords),bishopNumVerts,0}, 
-	{queenVerts,sizeof(queenVerts),queenNormals,sizeof(queenNormals),queenTexCoords,sizeof(queenTexCoords),queenNumVerts,0}, 
-	{kingVerts,sizeof(kingVerts),kingNormals,sizeof(kingNormals),kingTexCoords,sizeof(kingTexCoords),kingNumVerts,0}, 
-	{pawnVerts,sizeof(pawnVerts),pawnNormals,sizeof(pawnNormals),pawnTexCoords,sizeof(pawnTexCoords),pawnNumVerts,0}, 
-	{fieldVerts,sizeof(fieldVerts),fieldNormals,sizeof(fieldNormals),fieldTexCoords,sizeof(fieldTexCoords),fieldNumVerts,0}, 
+	{rookVerts,sizeof(rookVerts),rookNormals,sizeof(rookNormals),rookTexCoords,sizeof(rookTexCoords),rookNumVerts,0,'r'}, 
+	{knightVerts,sizeof(knightVerts),knightNormals,sizeof(knightNormals),knightTexCoords,sizeof(knightTexCoords),knightNumVerts,0,'n'}, 
+	{bishopVerts,sizeof(bishopVerts),bishopNormals,sizeof(bishopNormals),bishopTexCoords,sizeof(bishopTexCoords),bishopNumVerts,0,'b'}, 
+	{queenVerts,sizeof(queenVerts),queenNormals,sizeof(queenNormals),queenTexCoords,sizeof(queenTexCoords),queenNumVerts,0,'q'}, 
+	{kingVerts,sizeof(kingVerts),kingNormals,sizeof(kingNormals),kingTexCoords,sizeof(kingTexCoords),kingNumVerts,0,'k'}, 
+	{pawnVerts,sizeof(pawnVerts),pawnNormals,sizeof(pawnNormals),pawnTexCoords,sizeof(pawnTexCoords),pawnNumVerts,0,'p'}, 
+	{fieldVerts,sizeof(fieldVerts),fieldNormals,sizeof(fieldNormals),fieldTexCoords,sizeof(fieldTexCoords),fieldNumVerts,0,'f'}, 
 };

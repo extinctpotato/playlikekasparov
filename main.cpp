@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <map>
 #include <string>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -41,8 +42,10 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 std::ifstream bsn("./pgn/SovietChamp1973.bsn");
-int games;
 std::vector<std::string> board(8);
+int games;
+
+std::map<std::string, int> keyValueVAO;
 
 void next_move() {
 	for (int i = 0; i < 8; i++) {
@@ -173,6 +176,8 @@ void generateVAO() {
 		glEnableVertexAttribArray(2);
 
 		figures[i].vao = vao;
+		std::string l(1, figures[i].letter);
+		keyValueVAO[l] = vao;
 		printf("Generated VAO: %d\n", figures[i].vao);
 	}
 }
@@ -244,26 +249,47 @@ void drawScene(GLFWwindow* window) {
 		glm::vec3(1.0f,  0.0f, 6.0f),
 	};
 
-	bool tex = 0;
+	//bool tex = 0;
 
-	for (int i = 0; i < 2; i++) {
-		glm::vec3 *pos;
-		if (i == 0) pos = wPositions;
-		if (i == 1) pos = bPositions;
-		for (unsigned int j = 0; j < 6; j++) {
-			glBindVertexArray(figures[j].vao);
-			glUniform1i(s1->u("textureMap0"), tex);
-			glm::mat4 M = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-			M = glm::translate(M, pos[j]);
+	//for (int i = 0; i < 2; i++) {
+	//	glm::vec3 *pos;
+	//	if (i == 0) pos = wPositions;
+	//	if (i == 1) pos = bPositions;
+	//	for (unsigned int j = 0; j < 6; j++) {
+	//		glBindVertexArray(figures[j].vao);
+	//		glUniform1i(s1->u("textureMap0"), tex);
+	//		glm::mat4 M = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+	//		M = glm::translate(M, pos[j]);
+	//		float angle = 0;
+	//		M = glm::rotate(M, glm::radians(angle), glm::vec3(1.0f, 1.0f, 1.0f));
+	//		glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
+	//		glDrawArrays(GL_TRIANGLES, 0, figures[j].vertexCount);
+
+	//		glBindVertexArray(figures[6].vao);
+	//		glDrawArrays(GL_TRIANGLES, 0, figures[6].vertexCount);
+	//	}
+	//	tex = !tex;
+	//}
+
+	bool fieldTex = 1;
+	for (int i = 0; i < 8; i++) {
+		float fieldCounter = 0.0f;
+		for (char const &c: board[i]) {
+			glBindVertexArray(figures[6].vao);
+			glUniform1i(s1->u("textureMap0"), fieldTex);
+
+			glm::vec3 pos = glm::vec3(fieldCounter, 0.0f, i);
+			glm::mat4 M = glm::mat4(1.0f);
+			M = glm::translate(M, pos);
 			float angle = 0;
 			M = glm::rotate(M, glm::radians(angle), glm::vec3(1.0f, 1.0f, 1.0f));
 			glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M));
-			glDrawArrays(GL_TRIANGLES, 0, figures[j].vertexCount);
-
-			glBindVertexArray(figures[6].vao);
 			glDrawArrays(GL_TRIANGLES, 0, figures[6].vertexCount);
+
+			fieldTex = !fieldTex;
+			fieldCounter += 1.0f;
 		}
-		tex = !tex;
+		fieldTex = !fieldTex;
 	}
 
 
