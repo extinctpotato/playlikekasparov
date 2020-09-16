@@ -73,8 +73,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	cameraFront = glm::normalize(front);
 }
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 	fov -= (float)yoffset;
 	if (fov < 1.0f)
 		fov = 1.0f;
@@ -95,8 +94,7 @@ void keyCallback(GLFWwindow* window,int key,int scancode,int action,int mods) {
 	}
 }
 
-void processInput(GLFWwindow *window)
-{
+void processInput(GLFWwindow *window) {
 	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
