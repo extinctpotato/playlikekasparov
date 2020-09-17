@@ -26,14 +26,14 @@ GLuint dwood;
 
 float aspectRatio = 1;
 
-glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraPos   = glm::vec3(3.5f, 3.5f, -10.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
 
 bool firstMouse = true;
 bool grabbed = false;
-float yaw   = -90.0f;	// yaw of 0.0 results in a direction vector pointing to the right
-float pitch =  0.0f;
+float yaw   = 450.0f;	// yaw of 0.0 results in a direction vector pointing to the right
+float pitch =  -5.0f;
 float lastX =  800.0f / 2.0;
 float lastY =  600.0 / 2.0;
 float fov   =  45.0f;
@@ -103,6 +103,7 @@ void keyCallback(GLFWwindow* window,int key,int scancode,int action,int mods) {
 		if (key==GLFW_KEY_G) {
 			if (!grabbed) {
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+				firstMouse = true;
 			} else {
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			}
@@ -128,8 +129,6 @@ void processInput(GLFWwindow *window) {
 		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-
-	//printf("%f %f %f\n", cameraPos.x, cameraPos.y, cameraPos.z);
 }
 
 void error_callback(int error, const char* description) {
@@ -201,6 +200,12 @@ void init(GLFWwindow* window) {
 	glBindTexture(GL_TEXTURE_2D, dwood);
 
 	generateVAO();
+
+	glm::vec3 front;
+	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	front.y = sin(glm::radians(pitch));
+	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	cameraFront = glm::normalize(front);
 }
 
 void death(GLFWwindow* window) {
