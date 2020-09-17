@@ -41,7 +41,7 @@ float fov   =  45.0f;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-std::ifstream bsn("./pgn/SovietChamp1973.bsn");
+std::ifstream bsn;
 std::vector<std::string> board(8);
 int games;
 
@@ -280,8 +280,9 @@ void drawScene(GLFWwindow* window) {
 	glfwSwapBuffers(window);
 }
 
-int main(void) {
+int main(int argc, char** argv) {
 	setenv("MESA_GL_VERSION_OVERRIDE", "3.3", 1);
+	bsn.open(argv[1]);
 
 	bsn >> games;
 
