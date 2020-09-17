@@ -50,9 +50,6 @@ std::map<std::string, int> keyValueModel;
 void next_move() {
 	for (int i = 0; i < 8; i++) {
 		bsn >> board[i];
-		for (char const &c: board[i]) {
-			std::cout << c << '\n';
-		}
 	}
 }
 
@@ -289,7 +286,20 @@ void drawScene(GLFWwindow* window) {
 			if (c != '.') {
 				std::string piece(1, tolower(c));
 				int figureId = keyValueModel[piece];
-				bool figureTex = 0;
+				int figureTex = 1;
+				float figureAngle = 180.0f;
+
+				if (c >= 'A' && c <= 'Z') {
+					figureTex = 0;
+					figureAngle = 0.0f;
+				}
+
+				glm::mat4 M2 = glm::mat4(1.0f);
+				M2 = glm::translate(M2, pos);
+				M2 = glm::rotate(M2, glm::radians(figureAngle), glm::vec3(0.0f, 1.0f, 0.0f));
+				M2 = glm::rotate(M2, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+				glUniformMatrix4fv(s1->u("M"),1,false,glm::value_ptr(M2));
 				
 				glBindVertexArray(figures[figureId].vao);
 				glUniform1i(s1->u("textureMap0"), figureTex);
