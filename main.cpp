@@ -303,7 +303,7 @@ int main(int argc, char** argv) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
-	window = glfwCreateWindow(600, 600, "playlikekasparov", NULL, NULL);
+	window = glfwCreateWindow(800, 800, "playlikekasparov", NULL, NULL);
 
 	if (!window) {
 		fprintf(stderr, "Failed to initialize the window!\n");
