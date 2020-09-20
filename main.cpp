@@ -17,8 +17,6 @@
 #include "misc.h"
 #include "shaderprogram.h"
 
-const float PI = 3.141592653589793f;
-
 ShaderProgram *s1;
 
 GLuint lwood;
