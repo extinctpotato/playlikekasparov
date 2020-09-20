@@ -49,6 +49,9 @@ void next_move() {
 	for (int i = 0; i < 8; i++) {
 		bsn >> board[i];
 	}
+	if(bsn.eof()) {
+		printf("The game has concluded.\n");
+	}
 }
 
 
